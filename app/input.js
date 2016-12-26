@@ -8,6 +8,7 @@ export const Input = () => {
 
   window.onkeydown = function(e) {
     keys[e.key] = true
+    console.log(keys, e)
   }
   window.onkeyup = function(e) {
     keys[e.key] = false

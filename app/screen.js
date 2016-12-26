@@ -1,3 +1,5 @@
+import * as directions from './directions'
+
 export default Screen = (el) => {
   let ctx = el.getContext('2d');
   const render = (state, BLOCK_SIZE) => {
@@ -21,28 +23,26 @@ export default Screen = (el) => {
 
   const drawSnake = (turns, BLOCK_SIZE) => {
     ctx.fillStyle = 'white'
-    turns.forEach((turn, index) => {
-      let line = calcLine(index, BLOCK_SIZE)
+    turns.forEach((turn) => {
+      let line = calcLine(turn, BLOCK_SIZE)
 
       ctx.fillStyle = turn.color
       ctx.fillRect(turn.x,turn.y, line.x, line.y)
     })
   }
 
-  const calcLine = (i, BLOCK_SIZE) => {
+  const calcLine = (turn, BLOCK_SIZE) => {
     let x, y
 
-    if (i) {
-      x = (state.turns[i-1].x - state.turns[i].x)
-      y = (state.turns[i-1].y - state.turns[i].y)
+    x = y = BLOCK_SIZE
+
+    if (turn.dir == directions.LEFT || turn.dir == directions.RIGHT){
+      x = turn.length
     } else {
-      x = y = BLOCK_SIZE
+      y = turn.length
     }
 
-    return {
-      x: (x) ? x : BLOCK_SIZE,
-      y: (y) ? y : BLOCK_SIZE
-    }
+    return { x, y }
   }
 
   return {

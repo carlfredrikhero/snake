@@ -6,12 +6,13 @@ export const setCanvas = (w, h) => {
   }
 }
 
-export const positionSnake = (x, y, dir) => {
+export const positionSnake = (x, y, dir, length) => {
   return {
     type: 'POSITION_SNAKE',
     x,
     y,
-    dir
+    dir,
+    length
   }
 }
 
@@ -32,7 +33,23 @@ export const stop = () => {
 }
 
 export const forward = (distance) => {
-return { type: 'FORWARD', distance }
+  return { type: 'FORWARD', distance }
+}
+
+export const up = (distance) => {
+  return { type: 'UP', distance }
+}
+
+export const right = (distance) => {
+  return { type: 'RIGHT', distance }
+}
+
+export const down = (distance) => {
+  return { type: 'DOWN', distance }
+}
+
+export const left = (distance) => {
+  return { type: 'LEFT', distance }
 }
 
 // export const moveBall = () => {

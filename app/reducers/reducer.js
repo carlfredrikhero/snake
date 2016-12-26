@@ -17,6 +17,10 @@ export default (initialState) => (state = initialState, action) => {
       })
     case 'POSITION_SNAKE':
     case 'FORWARD':
+    case 'UP':
+    case 'RIGHT':
+    case 'DOWN':
+    case 'LEFT':
       return Object.assign({}, state, {
         turns: snake(state.turns, action)
       })
@@ -46,7 +50,7 @@ export default (initialState) => (state = initialState, action) => {
 const snake = (state, action) => {
   switch (action.type){
     case 'POSITION_SNAKE':
-      return [{x: action.x, y: action.y, dir: action.dir}]
+      return [{x: action.x, y: action.y, dir: action.dir, length: action.length}]
     // case 'MOVE_BALL':
     //   return Object.assign({}, state, {
     //     x: state.x + state.x_dir,
@@ -67,22 +71,55 @@ const snake = (state, action) => {
       switch (head.dir) {
         case 'up':
           head.y -= action.distance
+          head.length += (state.length > 1) ? action.distance : 0
           break
         case 'right':
           head.x += action.distance
+          head.length -= (state.length > 1) ? action.distance : 0
           break
         case 'down':
           head.y += action.distance
+          head.length -= (state.length > 1) ? action.distance : 0
           break
         case 'left':
           head.x -= action.distance
+          head.length += (state.length > 1) ? action.distance : 0
           break
+      }
+
+      if (state.length > 1) {
+        let tail = state.slice(-1)[0]
+        switch (tail.dir) {
+          case 'up':
+            head.length -= action.distance
+            break
+          case 'right':
+            tail.length -= action.distance
+            break
+          case 'down':
+            tail.length -= action.distance
+            break
+          case 'left':
+            tail.length -= action.distance
+            break
+        }
+
+        return [head, ...state.slice(1, -1), tail]
       }
 
       return [head, ...state.slice(1)]
       // 2. move tail 1 BLOCKSIZE in its direction
       // 3. if the tail equals the next tail, remove and move next tail instead
-      break
+    case 'UP':
+      head = state.slice(0,1)[0]
+      let new_head = {
+        x: head.x,
+        y: head.y - action.distance,
+        length: action.distance,
+        dir: action.type.toLowerCase()
+      }
+
+      return [new_head, ...state]
     default:
       return state
   }

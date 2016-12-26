@@ -1,12 +1,7 @@
-export const Game = (canvas, screen, input, store, actions) => {
+export const Game = (canvas, screen, input, store, actions, directions) => {
   let state = store.getState()
   let running = state.running
   let timerId
-
-  const UP = 'up';
-  const DOWN = 'down';
-  const LEFT = 'left';
-  const RIGHT = 'right';
 
   const BLOCK_SIZE = 10;
 
@@ -21,6 +16,10 @@ export const Game = (canvas, screen, input, store, actions) => {
 
       // is arrow key down?
 
+      Object.values(directions).forEach(() => {
+
+      })
+
       // is snake touching a candy?
 
       // is snake touch a wall?
@@ -29,8 +28,6 @@ export const Game = (canvas, screen, input, store, actions) => {
     }
 
     screen.render(store.getState(), BLOCK_SIZE)
-
-    step()
   }
 
   const start = () => {
@@ -38,11 +35,11 @@ export const Game = (canvas, screen, input, store, actions) => {
   }
 
   const step = () => {
-    timerId = requestAnimationFrame(tick)
+    timerId = setInterval(tick, 1000)
   }
 
   const stop = () => {
-    cancelAnimationFrame(timerId)
+    clearInterval(timerId)
   }
 
   const reset = () => {
@@ -83,7 +80,8 @@ export const Game = (canvas, screen, input, store, actions) => {
     actions.positionSnake(
         (canvas.width/2)-(BLOCK_SIZE/2),
         (canvas.height/2)-(BLOCK_SIZE/2),
-        RIGHT
+        directions.RIGHT,
+        BLOCK_SIZE*3
     )
   )
 
