@@ -18,10 +18,9 @@ const state = {
   add: 0,
   length: 1,
   turns: [
-    {x: 295, y: 295, color: 'white', dir: RIGHT},
-    {x: 205, y: 295, color: 'blue', dir: RIGHT},
-    {x: 205, y: 215, color: 'green', dir: DOWN},
-    {x: 215, y: 205, color: 'red', dir: LEFT},
+    {x: 295, y: 295, length: 10, color: 'white', dir: RIGHT},
+    {x: 285, y: 205, length: 100, color: 'red', dir: DOWN},
+    {x: 205, y: 205, length: 80, color: 'green', dir: RIGHT}
   ]
 }
 
@@ -47,17 +46,17 @@ const draw = (el) => {
 const calcLine = (i) => {
   let x, y
 
-  if (i) {
-    x = (state.turns[i-1].x - state.turns[i].x)
-    y = (state.turns[i-1].y - state.turns[i].y)
-
+  if (state.turns[i].dir == LEFT || state.turns[i].dir == RIGHT){
+    x = state.turns[i].length
+    y = BLOCK_SIZE
   } else {
-    x = y = BLOCK_SIZE
+    x = BLOCK_SIZE
+    y = state.turns[i].length
   }
 
   return {
-    x: (x) ? x : BLOCK_SIZE,
-    y: (y) ? y : BLOCK_SIZE
+    x,
+    y
   }
 }
 
@@ -67,33 +66,46 @@ const forward = () => {
   let head = state.turns[0]
 
   switch (head.dir){
+    case UP:
+      break
     case RIGHT:
-      state.turns[0].x = state.turns[0].x + BLOCK_SIZE
-  }
+      head.length += BLOCK_SIZE
+      break
+    case DOWN:
+      break
+    case LEFT:
+      break
 
+  }
 
   // 2. Remove 1 BLOCK_SIZE from turn[length-1]
   let tail = state.turns[state.turns.length-1]
 
-  switch (tail.dir){
-    case LEFT:
-      tail.x = tail.x - BLOCK_SIZE
-      break;
-    case DOWN:
-      tail.y = tail.y + BLOCK_SIZE
+  if (tail.length === BLOCK_SIZE){
+    state.turns.pop()
+  } else {
+    switch (tail.dir){
+      case UP:
+        break
+      case RIGHT:
+        tail.x += BLOCK_SIZE
+        tail.length -= BLOCK_SIZE
+        break
+      case DOWN:
+        tail.y += BLOCK_SIZE
+        tail.length -= BLOCK_SIZE
+        break
+      case LEFT:
+        break
+    }
   }
+
 }
 
 draw(document.querySelector('#gc'))
 console.log('state before: ', state)
-setTimeout(() => {
+setInterval(() => {
   forward()
   console.log('state after: ', state)
   draw(document.querySelector('#gc'))
-  setTimeout(() => {
-    forward()
-    console.log('state after: ', state)
-    draw(document.querySelector('#gc'))
-
-  }, 5000)
-}, 5000)
+}, 1000)
