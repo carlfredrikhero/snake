@@ -20,7 +20,7 @@ const state = {
   turns: [
     {x: 295, y: 295, color: 'white', dir: RIGHT},
     {x: 205, y: 295, color: 'blue', dir: RIGHT},
-    {x: 205, y: 205, color: 'green', dir: DOWN},
+    {x: 205, y: 215, color: 'green', dir: DOWN},
     {x: 215, y: 205, color: 'red', dir: LEFT},
   ]
 }
@@ -50,6 +50,7 @@ const calcLine = (i) => {
   if (i) {
     x = (state.turns[i-1].x - state.turns[i].x)
     y = (state.turns[i-1].y - state.turns[i].y)
+
   } else {
     x = y = BLOCK_SIZE
   }
@@ -80,19 +81,6 @@ const forward = () => {
       break;
     case DOWN:
       tail.y = tail.y + BLOCK_SIZE
-  }
-
-  let next_tail = state.turns[state.turns.length-2]
-
-  // remove tail if it's at
-  console.log(`tail.x === next_tail.x && tail.y === next_tail.y`)
-  console.log(`${tail.x} === ${next_tail.x} && ${tail.y} === ${next_tail.y}`)
-  if (tail.x === next_tail.x && tail.y === next_tail.y) {
-    state.turns.splice(-1)
-    switch (next_tail.dir){
-    case DOWN:
-      next_tail.y = next_tail.y + BLOCK_SIZE
-    }
   }
 }
 
