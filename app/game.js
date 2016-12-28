@@ -15,10 +15,24 @@ export const Game = (canvas, screen, input, store, actions, directions) => {
       // # trigger all actions
 
       // is arrow key down?
+      // 1. get head direction
 
-      Object.values(directions).forEach(() => {
-
+      Object.values(directions).forEach((dir) => {
+        (
+          input.keys[`Arrow${dir.charAt(0).toUpperCase() + dir.substr(1)}`] &&
+          store.dispatch(actions.change_direction(dir))
+        )
       })
+
+      // place candy
+      if (state.candy === null){
+        let min = 1
+        let max = (canvas.width/10)
+        store.dispatch(actions.place_candy(
+          Math.floor(Math.random() * (max - min)) + min,
+          Math.floor(Math.random() * (max - min)) + min
+        ))
+      }
 
       // is snake touching a candy?
 
@@ -35,20 +49,20 @@ export const Game = (canvas, screen, input, store, actions, directions) => {
   }
 
   const step = () => {
-    timerId = setInterval(tick, 1000)
+    timerId = setInterval(tick, 200)
   }
 
   const stop = () => {
     clearInterval(timerId)
   }
 
-  const reset = () => {
-    store.dispatch(actions.stop())
-    store.dispatch(actions.positionBall(canvas.width/2, canvas.height/2))
-    setTimeout(() => {
-      store.dispatch(actions.start())
-    }, 3000)
-  }
+  // const reset = () => {
+  //   store.dispatch(actions.stop())
+  //   store.dispatch(actions.positionBall(canvas.width/2, canvas.height/2))
+  //   setTimeout(() => {
+  //     store.dispatch(actions.start())
+  //   }, 3000)
+  // }
 
   store.subscribe(() => {
     let state = store.getState()
@@ -77,12 +91,7 @@ export const Game = (canvas, screen, input, store, actions, directions) => {
   store.dispatch(actions.setCanvas(canvas.width, canvas.height));
   // place snake in the middle
   store.dispatch(
-    actions.positionSnake(
-        (canvas.width/2)-(BLOCK_SIZE/2),
-        (canvas.height/2)-(BLOCK_SIZE/2),
-        directions.RIGHT,
-        BLOCK_SIZE*3
-    )
+    actions.positionSnake(10, 10)
   )
 
   return { tick, stop }

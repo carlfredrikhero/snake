@@ -11,7 +11,11 @@ export default Screen = (el) => {
     drawScore(state.score)
 
     // draw_rackets
-    drawSnake(state.turns, BLOCK_SIZE)
+    drawSnake(state.snake, BLOCK_SIZE)
+
+    if (state.candy !== null) {
+      drawCandy(state.candy.x, state.candy.y, BLOCK_SIZE)
+    }
   }
 
   const drawScore = (score) => {
@@ -21,28 +25,26 @@ export default Screen = (el) => {
     ctx.fillText(('00' + score).substr(-3), 10, 20);
   }
 
-  const drawSnake = (turns, BLOCK_SIZE) => {
+  const drawSnake = (snake, BLOCK_SIZE) => {
     ctx.fillStyle = 'white'
-    turns.forEach((turn) => {
-      let line = calcLine(turn, BLOCK_SIZE)
-
-      ctx.fillStyle = turn.color
-      ctx.fillRect(turn.x,turn.y, line.x, line.y)
+    snake.forEach((cell) => {
+      ctx.fillRect(
+        cell.x*BLOCK_SIZE,
+        cell.y*BLOCK_SIZE,
+        BLOCK_SIZE,
+        BLOCK_SIZE
+      )
     })
   }
 
-  const calcLine = (turn, BLOCK_SIZE) => {
-    let x, y
-
-    x = y = BLOCK_SIZE
-
-    if (turn.dir == directions.LEFT || turn.dir == directions.RIGHT){
-      x = turn.length
-    } else {
-      y = turn.length
-    }
-
-    return { x, y }
+  const drawCandy = (x, y, BLOCK_SIZE) => {
+    ctx.fillStyle = 'green'
+    ctx.fillRect(
+        x*BLOCK_SIZE,
+        y*BLOCK_SIZE,
+        BLOCK_SIZE,
+        BLOCK_SIZE
+      )
   }
 
   return {
