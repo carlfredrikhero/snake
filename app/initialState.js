@@ -6,6 +6,7 @@ export default {
     h: 0
   },
   score: 0,
+  grow: 0,
   snake: [],
   candy: null
 }

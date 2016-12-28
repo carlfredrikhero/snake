@@ -2,26 +2,25 @@ export const Input = () => {
   let keys = {}
   let listeners = []
   let actions = {
-    start: 'START',
-    stop: 'STOP',
+    p: 'start',
+    s: 'stop',
+    up: 'up',
+    right: 'right',
+    down: 'down',
+    left: 'left',
   }
 
   window.onkeydown = function(e) {
     keys[e.key] = true
+
+    let arrows = [e.key]
+    .map(key => key.toLowerCase())
+    .map(key => key.replace('arrow', ''))
+    .filter(key => key in actions)
+    .forEach(key => emit(actions[key]))
   }
   window.onkeyup = function(e) {
     keys[e.key] = false
-  }
-
-  window.onkeypress = function(ev){
-    switch(ev.key){
-      case 'p':
-        emit(actions.start)
-        break;
-      case 's':
-        emit(actions.stop)
-        break;
-    }
   }
 
   const subscribe = (listener) => {

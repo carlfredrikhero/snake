@@ -14,31 +14,34 @@ export const Game = (canvas, screen, input, store, actions, directions) => {
     if (running) {
       // # trigger all actions
 
-      // is arrow key down?
-      // 1. get head direction
-
-      Object.values(directions).forEach((dir) => {
-        (
-          input.keys[`Arrow${dir.charAt(0).toUpperCase() + dir.substr(1)}`] &&
-          store.dispatch(actions.change_direction(dir))
-        )
-      })
-
       // place candy
       if (state.candy === null){
         let min = 1
         let max = (canvas.width/10)
-        store.dispatch(actions.place_candy(
+        store.dispatch(actions.placeCandy(
           Math.floor(Math.random() * (max - min)) + min,
           Math.floor(Math.random() * (max - min)) + min
         ))
       }
+
 
       // is snake touching a candy?
 
       // is snake touch a wall?
 
       store.dispatch(actions.forward(BLOCK_SIZE))
+      if (state.grow){
+        store.dispatch(actions.grow(-1))
+      }
+
+      state = store.getState()
+
+      if (state.snake[0].x == state.candy.x &&
+          state.snake[0].y == state.candy.y) {
+        store.dispatch(actions.addScore())
+        store.dispatch(actions.grow(1))
+        store.dispatch(actions.clearCandy())
+      }
     }
 
     screen.render(store.getState(), BLOCK_SIZE)
@@ -77,13 +80,7 @@ export const Game = (canvas, screen, input, store, actions, directions) => {
 
   input.subscribe(function(action){
     console.log(action)
-    switch(action){
-      case 'START':
-        store.dispatch(actions.start())
-        break;
-      case 'STOP':
-        store.dispatch(actions.stop())
-    }
+    store.dispatch(actions[action]())
   })
 
 

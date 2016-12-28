@@ -19,10 +19,14 @@ export default (initialState) => (state = initialState, action) => {
       return Object.assign({}, state, {
         direction: action.direction
       })
+    case 'GROW':
+      return Object.assign({}, state, {
+        grow: state.grow + action.length
+      })
     case 'POSITION_SNAKE':
     case 'FORWARD':
       return Object.assign({}, state, {
-        snake: snake(state.snake, action, state.direction)
+        snake: snake(state.snake, action, state.direction, state.grow)
       })
     case 'ADD_SCORE':
       return Object.assign({}, state, {
@@ -32,12 +36,16 @@ export default (initialState) => (state = initialState, action) => {
       return Object.assign({}, state, {
         candy: {x: action.x, y: action.y}
       })
+    case 'CLEAR_CANDY':
+      return Object.assign({}, state, {
+        candy: null
+      })
     default:
       return state
   }
 }
 
-const snake = (state, action, direction) => {
+const snake = (state, action, direction, grow) => {
   switch (action.type){
     case 'POSITION_SNAKE':
       return [5,4,3,2,1].map((i) => {
@@ -45,6 +53,9 @@ const snake = (state, action, direction) => {
       })
     case 'FORWARD':
       // take the tail and place it in front of the head
+
+      // TODO if grow, create new head instead of moving the tail
+
       let head = state.slice(0,1)[0]
       let tail = state.slice(-1)[0]
 
@@ -66,6 +77,9 @@ const snake = (state, action, direction) => {
           tail.y = head.y
           break
       }
+
+      console.log('grown', [tail, ...state])
+      console.log('not grown', [tail, ...state.slice(0,-1)])
 
       return [tail, ...state.slice(0,-1)]
     default:

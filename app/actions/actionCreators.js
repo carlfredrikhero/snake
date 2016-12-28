@@ -36,12 +36,36 @@ export const forward = (distance) => {
   return { type: 'FORWARD', distance }
 }
 
-export const change_direction = (direction) => {
+export const changeDirection = (direction) => {
   return { type: 'CHANGE_DIRECTION', direction}
 }
 
-export const place_candy = (x, y) => {
+export const up = () => {
+  return changeDirection('up')
+}
+
+export const right = () => {
+  return changeDirection('right')
+}
+
+export const down = () => {
+  return changeDirection('down')
+}
+
+export const left = () => {
+  return changeDirection('left')
+}
+
+export const placeCandy = (x, y) => {
   return { type: 'PLACE_CANDY', x, y}
+}
+
+export const clearCandy = () => {
+  return { type: 'CLEAR_CANDY'}
+}
+
+export const grow = (length) => {
+  return { type: 'GROW', length}
 }
 
 export const addScore = (i) => {
