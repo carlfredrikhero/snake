@@ -1,4 +1,4 @@
-export const Game = (canvas, screen, input, store, actions, directions) => {
+export const Game = (canvas, screen, input, store, actions, directions, initialState) => {
   let state = store.getState()
   let running = state.running
   let timerId
@@ -24,9 +24,6 @@ export const Game = (canvas, screen, input, store, actions, directions) => {
         ))
       }
 
-
-      // is snake touching a candy?
-
       // is snake touch a wall?
 
       store.dispatch(actions.forward(BLOCK_SIZE))
@@ -36,11 +33,30 @@ export const Game = (canvas, screen, input, store, actions, directions) => {
 
       state = store.getState()
 
-      if (state.snake[0].x == state.candy.x &&
-          state.snake[0].y == state.candy.y) {
+      // is snake touching a candy?
+      if (state.snake[0].x === state.candy.x &&
+          state.snake[0].y === state.candy.y) {
         store.dispatch(actions.addScore())
         store.dispatch(actions.grow(1))
         store.dispatch(actions.clearCandy())
+      }
+
+      //is snake touching a wall?
+      if (state.snake[0].x < 0 ||
+          state.snake[0].x > (canvas.width/BLOCK_SIZE) ||
+          state.snake[0].y < 0 ||
+          state.snake[0].y > (canvas.height/BLOCK_SIZE)) {
+        reset()
+      }
+
+      // is snake touching itself
+      let head = state.snake.slice(0,1)[0]
+      let touchingItself = state.snake.reduce((previous, current, currentIndex) => {
+        return (previous || (!!currentIndex && head.x === current.x && head.y === current.y))
+      }, false)
+
+      if (touchingItself){
+        reset()
       }
     }
 
@@ -52,20 +68,19 @@ export const Game = (canvas, screen, input, store, actions, directions) => {
   }
 
   const step = () => {
-    timerId = setInterval(tick, 200)
+    timerId = setInterval(tick, 100)
   }
 
   const stop = () => {
     clearInterval(timerId)
   }
 
-  // const reset = () => {
-  //   store.dispatch(actions.stop())
-  //   store.dispatch(actions.positionBall(canvas.width/2, canvas.height/2))
-  //   setTimeout(() => {
-  //     store.dispatch(actions.start())
-  //   }, 3000)
-  // }
+  const reset = () => {
+    store.dispatch(actions.reset(initialState))
+    store.dispatch(
+      actions.positionSnake(10, 10)
+    )
+  }
 
   store.subscribe(() => {
     let state = store.getState()
@@ -79,7 +94,6 @@ export const Game = (canvas, screen, input, store, actions, directions) => {
   })
 
   input.subscribe(function(action){
-    console.log(action)
     store.dispatch(actions[action]())
   })
 

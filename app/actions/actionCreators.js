@@ -28,8 +28,13 @@ export const positionSnake = (x, y, dir, length) => {
 export const start = () => {
   return { type: 'START' }
 }
+
 export const stop = () => {
   return { type: 'STOP' }
+}
+
+export const reset = (state) => {
+  return { type: 'RESET', state }
 }
 
 export const forward = (distance) => {

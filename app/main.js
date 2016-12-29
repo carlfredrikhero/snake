@@ -12,7 +12,7 @@ let store = createStore(createReducer(initialState),window.__REDUX_DEVTOOLS_EXTE
 let screen = Screen(document.getElementById('gc'))
 let input = Input()
 
-let game = Game(document.getElementById('gc'), screen, input, store, actions, directions)
+let game = Game(document.getElementById('gc'), screen, input, store, actions, directions, initialState)
 
 game.tick()
 

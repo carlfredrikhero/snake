@@ -8,6 +8,8 @@ export default (initialState) => (state = initialState, action) => {
       return Object.assign({}, state, {
         running: false
       })
+    case 'RESET':
+      return Object.assign({}, action.state)
     case 'SET_CANVAS':
       return Object.assign({}, state, {
         canvas: {
@@ -16,6 +18,19 @@ export default (initialState) => (state = initialState, action) => {
         }
       })
     case 'CHANGE_DIRECTION':
+      switch (action.direction){
+        case 'left':
+        case 'right':
+          if (state.direction === 'left' || state.direction === 'right'){
+            return state
+          }
+          break
+        case 'up':
+        case 'down':
+          if (state.direction === 'up' || state.direction === 'down'){
+            return state
+          }
+      }
       return Object.assign({}, state, {
         direction: action.direction
       })
@@ -56,32 +71,29 @@ const snake = (state, action, direction, grow) => {
 
       // TODO if grow, create new head instead of moving the tail
 
-      let head = state.slice(0,1)[0]
-      let tail = state.slice(-1)[0]
+      let old_head = state.slice(0,1)[0]
+      let new_head = (grow) ? Object.assign({}, old_head) : state.pop()
 
       switch (direction){
         case 'up':
-          tail.x = head.x
-          tail.y = head.y-1
+          new_head.x = old_head.x
+          new_head.y = old_head.y-1
           break
         case 'right':
-          tail.x = head.x+1
-          tail.y = head.y
+          new_head.x = old_head.x+1
+          new_head.y = old_head.y
           break
         case 'down':
-          tail.x = head.x
-          tail.y = head.y+1
+          new_head.x = old_head.x
+          new_head.y = old_head.y+1
           break
         case 'left':
-          tail.x = head.x-1
-          tail.y = head.y
+          new_head.x = old_head.x-1
+          new_head.y = old_head.y
           break
       }
 
-      console.log('grown', [tail, ...state])
-      console.log('not grown', [tail, ...state.slice(0,-1)])
-
-      return [tail, ...state.slice(0,-1)]
+      return [new_head, ...state]
     default:
       return state
   }
